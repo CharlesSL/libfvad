@@ -16,7 +16,7 @@ void *init_vad(int mode, int sample_rate, int num_processes, bool verbose) {
 }
 
 void free_vad(void *vad_p) {
-    free((Vad *) vad_p);
+    delete (Vad*)vad_p;
 }
 
 vector<bool> process_vad_loop(Vad *vad, const int16_t *samples, int num_frames) {
@@ -45,6 +45,8 @@ vector<bool> process_vad(void *vad_p, const char *samples, int len) {
         futures.emplace_back(vad->pool->submit(process_vad_loop, vad,  samples_short + (i * vad_frame_length), min(num_frames_per_thread, total_num_frames - i)));
     }
     auto t2 = high_resolution_clock::now();
+
+    // waiting for task finish
     vector<bool> results;
     for (auto &future: futures) {
         auto r = future.get();
