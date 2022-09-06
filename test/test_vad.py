@@ -10,5 +10,6 @@ t1=time.time()
 for i in range(1000):
     results=vad.process_vad(v,data, len(data)//2)
 t2=time.time()
+vad.free_vad(v)
 
 print('consume',t2-t1, "results:",results)
