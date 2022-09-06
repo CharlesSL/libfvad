@@ -1,0 +1,36 @@
+include(FetchContent)
+
+cmake_minimum_required(VERSION 3.24)
+project(vad)
+
+set(CMAKE_CXX_STANDARD 17)
+
+include_directories(include)
+include_directories(src)
+link_directories(lib)
+
+FetchContent_Declare(fvad
+        URL      https://github.com/dpirch/libfvad/archive/refs/tags/v1.0.zip
+        )
+message(${fvad_SOURCE_DIR})
+#FetchContent_MakeAvailable(fvad)
+#add_subdirectory(${fvad_SOURCE_DIR})
+
+FetchContent_Declare(pybind11
+        URL      https://github.com/pybind/pybind11/archive/refs/tags/v2.9.2.zip
+        URL_HASH SHA256=d1646e6f70d8a3acb2ddd85ce1ed543b5dd579c68b8fb8e9638282af20edead8
+        )
+FetchContent_MakeAvailable(pybind11)
+add_subdirectory(${pybind11_SOURCE_DIR})
+
+pybind11_add_module(vad_cpp src/vad_pybind.cpp src/vad.cpp)
+target_link_libraries(vad_cpp PRIVATE pthread)
+
+#add_executable(vad_test
+#        include/fvad.h
+#        include/BS_thread_pool.hpp
+#        src/vad.cpp
+#        src/vad_pybind.cpp
+#        src/vad.h test/test.cpp)
+#
+#target_link_libraries(vad_test libfvad.a pthread)
